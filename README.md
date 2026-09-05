@@ -28,11 +28,15 @@ docker compose logs -f api web
 
 API lines look like `[api 2026-09-05T10:30:00.000000Z] GET /api/hello from 172.18.0.3 -> 200`.
 
-## Railway / compose host
+## Railway / OpenDeploy
 
 | Field | Value |
 | --- | --- |
 | Root directory | **leave empty** |
-| Compose file | `docker-compose.yml` |
+| Build | Auto, or Docker Compose |
+| Compose file | `docker-compose.yml` or leave empty — **do not type `-f`** |
+| Compose service | `web` |
+| Web container port | `80` |
+| API container port | `8000` |
 
-Public site is the **web** service (nginx). The API is reached as hostname `api` on port `8000` on the private network. If the host renames services, update `frontend/nginx.conf` (`proxy_pass http://api:8000`).
+`web` is first so a blank compose-service field still publishes the site. nginx proxies `/api` to hostname `api` port `8000`. If the host renames services, update `frontend/nginx.conf`.
