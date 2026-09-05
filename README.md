@@ -36,7 +36,9 @@ API lines look like `[api 2026-09-05T10:30:00.000000Z] GET /api/hello from 172.1
 | Build | Auto, or Docker Compose |
 | Compose file | `docker-compose.yml` or leave empty — **do not type `-f`** |
 | Compose service | `web` |
-| Web container port | `80` |
-| API container port | `8000` |
+| Web container port | `80` locally, or `8080` if that is what nginx should listen on |
+| API container port | must match the API process (`8000` default, or `8001` if you set `PORT_API=8001`) |
+
+If the page shows **HTTP 502**, nginx cannot reach the API. The web service proxies `/api` to `api:$PORT_API` (default `api:8000`). Host ports (8080 / 8001) are only for the browser; inside the compose network the API is still hostname `api`.
 
 `web` is first so a blank compose-service field still publishes the site. nginx proxies `/api` to hostname `api` port `8000`. If the host renames services, update `frontend/nginx.conf`.

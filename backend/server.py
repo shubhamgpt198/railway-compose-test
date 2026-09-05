@@ -8,7 +8,7 @@ import os
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-PORT = int(os.environ.get("PORT", "8000"))
+PORT = int(os.environ.get("PORT_API") or os.environ.get("PORT") or "8000")
 
 
 def _json(data: dict) -> bytes:

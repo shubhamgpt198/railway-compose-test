@@ -5,6 +5,9 @@ services:
       dockerfile: frontend/Dockerfile
     environment:
       PORT: ${PORT_WEB:-80}
+      PORT_WEB: ${PORT_WEB:-80}
+      PORT_API: ${PORT_API:-8000}
+      API_HOST: api
     ports:
       - "${HOST_PORT_WEB:-8080}:${PORT_WEB:-80}"
     depends_on:
@@ -16,5 +19,6 @@ services:
       dockerfile: backend/Dockerfile
     environment:
       PORT: ${PORT_API:-8000}
+      PORT_API: ${PORT_API:-8000}
     ports:
       - "${HOST_PORT_API:-8001}:${PORT_API:-8000}"
