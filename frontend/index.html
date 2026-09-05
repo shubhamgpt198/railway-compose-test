@@ -17,28 +17,63 @@
       #status { font-weight: 600; }
       #status.ok { color: #0a7f3f; }
       #status.err { color: #b42318; }
+      #log {
+        margin-top: 1.25rem;
+        padding: 0.75rem 1rem;
+        overflow: auto;
+        max-height: 16rem;
+        font-size: 0.85rem;
+        white-space: pre-wrap;
+      }
     </style>
   </head>
   <body>
     <h1>Compose deploy test</h1>
     <p>This page is the frontend. It calls <code>/api/hello</code> on the backend through nginx.</p>
     <p>Backend: <span id="status">checking…</span></p>
+    <p><button type="button" id="again">Call /api/hello again</button></p>
     <pre id="payload"></pre>
+    <h2>Call log</h2>
+    <pre id="log"></pre>
     <script>
-      fetch("/api/hello")
-        .then(function (res) {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          return res.json();
-        })
-        .then(function (data) {
-          document.getElementById("status").textContent = "connected";
-          document.getElementById("status").className = "ok";
-          document.getElementById("payload").textContent = JSON.stringify(data, null, 2);
-        })
-        .catch(function (err) {
-          document.getElementById("status").textContent = "failed (" + err.message + ")";
-          document.getElementById("status").className = "err";
-        });
+      function stamp() {
+        return new Date().toISOString();
+      }
+
+      function logLine(line) {
+        var text = "[web " + stamp() + "] " + line;
+        console.log(text);
+        var el = document.getElementById("log");
+        el.textContent = el.textContent ? el.textContent + "\n" + text : text;
+        el.scrollTop = el.scrollHeight;
+      }
+
+      function callHello() {
+        logLine("GET /api/hello");
+        var started = Date.now();
+        return fetch("/api/hello")
+          .then(function (res) {
+            return res.text().then(function (text) {
+              var ms = Date.now() - started;
+              logLine("<- " + res.status + " in " + ms + "ms " + text.trim());
+              if (!res.ok) throw new Error("HTTP " + res.status);
+              return JSON.parse(text);
+            });
+          })
+          .then(function (data) {
+            document.getElementById("status").textContent = "connected";
+            document.getElementById("status").className = "ok";
+            document.getElementById("payload").textContent = JSON.stringify(data, null, 2);
+          })
+          .catch(function (err) {
+            logLine("error " + err.message);
+            document.getElementById("status").textContent = "failed (" + err.message + ")";
+            document.getElementById("status").className = "err";
+          });
+      }
+
+      document.getElementById("again").addEventListener("click", callHello);
+      callHello();
     </script>
   </body>
 </html>

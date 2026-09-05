@@ -20,7 +20,13 @@ docker compose up --build
 - Backend direct: http://localhost:8001/api/hello
 - Health: http://localhost:8001/api/health
 
-The page should say **Backend: connected** and show `hello from the backend`.
+The page should say **Backend: connected** and show `hello from the backend`. Each click logs the request in the page and in `docker compose logs`:
+
+```bash
+docker compose logs -f api web
+```
+
+API lines look like `[api 2026-09-05T10:30:00.000000Z] GET /api/hello from 172.18.0.3 -> 200`.
 
 ## Railway / compose host
 
