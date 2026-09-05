@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>railway-compose-test</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        max-width: 40rem;
+        margin: 12vh auto;
+        padding: 0 1.25rem;
+        line-height: 1.5;
+      }
+      code { font-size: 0.95em; }
+      #status { font-weight: 600; }
+      #status.ok { color: #0a7f3f; }
+      #status.err { color: #b42318; }
+    </style>
+  </head>
+  <body>
+    <h1>Compose deploy test</h1>
+    <p>This page is the frontend. It calls <code>/api/hello</code> on the backend through nginx.</p>
+    <p>Backend: <span id="status">checking…</span></p>
+    <pre id="payload"></pre>
+    <script>
+      fetch("/api/hello")
+        .then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          document.getElementById("status").textContent = "connected";
+          document.getElementById("status").className = "ok";
+          document.getElementById("payload").textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(function (err) {
+          document.getElementById("status").textContent = "failed (" + err.message + ")";
+          document.getElementById("status").className = "err";
+        });
+    </script>
+  </body>
+</html>
