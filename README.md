@@ -20,13 +20,18 @@ docker compose up --build
 - Backend direct: http://localhost:8001/api/hello
 - Health: http://localhost:8001/api/health
 
-The page should say **Backend: connected** and show `hello from the backend`. Each click logs the request in the page and in `docker compose logs`:
+The page should say **Backend: connected** and show `hello from the backend`.
+
+The **Call log** on the page is written by JavaScript in the browser. It does **not** go to Docker. Container logs are only what nginx and the API print:
 
 ```bash
 docker compose logs -f api web
 ```
 
-API lines look like `[api 2026-09-05T10:30:00.000000Z] GET /api/hello from 172.18.0.3 -> 200`.
+- `api`: `[api …] received GET /api/hello … -> 200`
+- `web`: `[web …] GET /api/hello -> 200 upstream=172.x.x.x:8000`
+
+A **502** on the page with nothing in `api` logs means nginx never reached the backend. Check the `web` service log for `upstream=` / connect errors.
 
 ## Railway / OpenDeploy
 

@@ -14,6 +14,7 @@
         line-height: 1.5;
       }
       code { font-size: 0.95em; }
+      .small { font-size: 0.9rem; }
       #status { font-weight: 600; }
       #status.ok { color: #0a7f3f; }
       #status.err { color: #b42318; }
@@ -33,7 +34,8 @@
     <p>Backend: <span id="status">checking…</span></p>
     <p><button type="button" id="again">Call /api/hello again</button></p>
     <pre id="payload"></pre>
-    <h2>Call log</h2>
+    <h2>Call log (browser only)</h2>
+    <p class="small">These lines are written in the page. Server copies are in <code>docker compose logs -f api web</code>.</p>
     <pre id="log"></pre>
     <script>
       function stamp() {
